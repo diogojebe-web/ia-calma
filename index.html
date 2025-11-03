@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Robô C.A.L.M.A. — A IA do Emagrecimento Feminino</title>
+<style>
+  /* --- VARIÁVEIS DE COR ATUALIZADAS PARA COMBINAR COM O ROBÔ (MAIS TURQUESA/AZUL) --- */
+  :root{
+    --turquoise:#2FD5C7; /* Turquesa vibrante (como no logo do robô) */
+    --turquoise-ink:#005d56; /* Tom mais escuro do turquesa */
+    --turquoise-soft:#ECFFFC; /* Fundo suave de turquesa */
+
+    --pink:#F4A3B8; /* Rosa do logo (complementar) */
+    --pink-ink:#7c2944;
+    --pink-soft:#FDF1F5;
+
+    --ink:#111827;
+    --muted:#6B7280;
+    --bg:#ffffff;
+    --bg-soft:#F9FAFB;
+    
+    /* Gradiente com mais turquesa/azul */
+    --grad: linear-gradient(135deg, #D6F9F6 0%, #E0F4FB 100%); /* Turquesa claro para um azul bem suave */
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--bg);
+  }
+  img{max-width:100%; height:auto; display:block}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+  /* --- Botões & util --- */
+  .btn{
+    display:inline-block; background:var(--turquoise); color:#003433; 
+    font-weight:700; padding:16px 22px; border-radius:12px; text-decoration:none;
+    box-shadow:0 8px 18px rgba(47,213,199,.25); transition:transform .08s ease, box-shadow .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 12px 24px rgba(47,213,199,.35)}
+  .btn-pink{ background:var(--pink); color:#5b1030; box-shadow:0 8px 18px rgba(244,163,184,.25)}
+  .btn-pink:hover{transform:translateY(-2px); box-shadow:0 12px 24px rgba(244,163,184,.35)}
+
+  .badge{display:inline-block; padding:.22rem .6rem; border-radius:999px; background:#E6FFFB; color:#06635d; font-weight:700; font-size:.78rem}
+  .eyebrow{color:var(--pink); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:.85rem}
+  .muted{color:var(--muted)}
+  .small{font-size:.9rem}
+  .center{text-align:center}
+  .divider{height:1px; background:#EEF2F7; margin:22px 0}
+
+  /* --- HERO --- */
+  .hero{
+    background:var(--grad);
+    padding:48px 0 28px; border-bottom:1px solid #EEF2F7;
+  }
+  .hero-top{display:flex; align-items:center; gap:14px; margin-bottom:10px}
+  .logo{height:60px;width:auto}
+  h1{font-size:clamp(26px,4.6vw,44px); line-height:1.1; margin:10px 0}
+  .sub{color:#25313b; font-size:clamp(16px,2.6vw,20px); max-width:900px}
+  .hero-grid{display:grid; grid-template-columns:1fr; gap:22px; align-items:center; margin-top:18px}
+  @media(min-width:980px){ .hero-grid{ grid-template-columns:1.15fr .85fr } }
+  .bullets{margin:12px 0 8px; display:grid; gap:10px}
+  .bullet{display:flex; gap:10px; align-items:flex-start; background:#ffffffc9; backdrop-filter:saturate(1.2) blur(2px);
+          border:1px solid #E7EEF5; padding:10px 12px; border-radius:12px}
+  .check{color:#0c6f67; font-weight:900}
+
+  /* --- Vídeo responsivo --- */
+  .video-wrap{
+    border-radius:16px; overflow:hidden; border:1px solid #E7EEF5; background:#fff; box-shadow:0 6px 24px rgba(0,0,0,.06);
+    aspect-ratio:16/9;
+  }
+  .video-wrap iframe{width:100%; height:100%; border:0; display:block}
+
+  /* --- Seções gerais --- */
+  .section{padding:36px 0}
+  .section.alt{background:var(--bg-soft)}
+
+  /* --- Cards de destaque --- */
+  .grid-3{display:grid; grid-template-columns:1fr; gap:16px}
+  @media(min-width:720px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+  .card{background:#fff; border:1px solid #EEF2F7; border-radius:16px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,.04)}
+  .card-img{width:100%; aspect-ratio:16/9; object-fit:cover; background:#f0f0f0}
+  .card-body{padding:14px}
+  .kicker{color:#0b7d73; font-weight:700; font-size:.85rem; letter-spacing:.06em; text-transform:uppercase}
+
+  /* --- Pilares --- */
+  .pillars{display:grid; grid-template-columns:1fr; gap:14px}
+  @media(min-width:840px){.pillars{grid-template-columns:repeat(5,1fr)}}
+  .pillar{background:#fff; border:1px solid #EEF2F7; border-radius:14px; padding:14px}
+
+  /* --- Listas --- */
+  .list{display:grid; gap:10px}
+  .li{display:flex; gap:10px}
+  .li::before{content:"•"; color:var(--turquoise); font-weight:900}
+  
+/* --- “Você recebe” (cartões) --- */
+  .receive-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-top:10px;
+  }
+  @media(min-width:760px){
+    .receive-grid{ grid-template-columns:repeat(2,1fr) }
+  }
+  @media(min-width:1080px){
+    .receive-grid{ grid-template-columns:repeat(3,1fr) }
+  }
+  .receive-card{
+    background:#fff;
+    border:1px solid #EEF2F7;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,.05);
+    padding:14px 14px 14px 12px;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .receive-icon{
+    flex:0 0 34px; height:34px; width:34px;
+    display:grid; place-items:center;
+    border-radius:10px;
+    background:var(--turquoise-soft);
+    color:var(--turquoise-ink);
+    font-weight:900;
+    border:1px solid #dff6f3;
+    margin-top:2px;
+  }
+  .receive-text{ font-size:clamp(15px,2.4vw,17px); line-height:1.5 }
+
+  /* --- COMPARAÇÃO (duas colunas) --- */
+  .compare{
+    display:grid; grid-template-columns:1fr; gap:18px;
+  }
+  @media(min-width:900px){ .compare{ grid-template-columns:1fr 1fr } }
+  .panel{
+    background:#fff; border:2px solid #e7eef5; border-radius:16px; overflow:hidden;
+  }
+  .panel--bad{ background:var(--pink-soft); border-color:#F4A3B8 }
+  .panel--good{ background:var(--turquoise-soft); border-color:#7be9de }
+  .panel-head{
+    padding:18px; text-align:center; font-weight:900; font-size:1.25rem
+  }
+  .panel--bad .panel-head{ color:var(--pink-ink) }
+  .panel--good .panel-head{ color:var(--turquoise-ink) }
+  .panel-body{ padding:16px 18px }
+  .panel-body .li::before{ content:"" } /* sem bolinha duplicada */
+  .panel--bad .panel-body li{ list-style:none; margin:10px 0; padding-left:0; display:flex; gap:8px; align-items:flex-start; }
+  .panel--good .panel-body li{ list-style:none; margin:10px 0; padding-left:0; display:flex; gap:8px; align-items:flex-start; }
+  .panel ul{margin:0; padding:0}
+
+  /* --- CTA com leve degradê --- */
+  .cta-block{background:linear-gradient(180deg, #fff 0%, #FDF7FA 100%); border:1px solid #FAD9E4; padding:22px; border-radius:16px}
+
+/* --- FAQ acordeão (versão revisada e responsiva) --- */
+.faq {
+  border: 1px solid #EEF2F7;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Cada item do acordeão */
+.faq-item {
+  border-top: 1px solid #EEF2F7;
+}
+
+.faq-item:first-child {
+  border-top: 0;
+}
+
+/* Pergunta (bloco clicável) */
+.faq-q {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 0;
+  padding: 20px 24px;
+  font-size: clamp(18px, 2.5vw, 21px); /* 🔥 Tamanho da fonte aumentado */
+  font-weight: 700;
+  color: #0b2239;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* Efeito ao passar o mouse */
+.faq-q:hover {
+  background: #f8fdfc;
+  color: #09204a;
+}
+
+/* Resposta (texto que aparece ao abrir) */
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 24px;
+  color: #444;
+  font-size: clamp(16px, 2.2vw, 18px);
+  line-height: 1.6;
+  background: #f9fbfc;
+}
+
+/* Quando o item é aberto */
+.faq-item.open .faq-a {
+  max-height: 280px; /* pode ajustar se as respostas forem mais longas */
+  padding: 0 24px 18px 24px;
+}
+
+/* Ícone de seta animado */
+.faq-icon {
+  transition: transform 0.25s ease;
+}
+
+.faq-item.open .faq-icon {
+  transform: rotate(180deg);
+}
+  /* --- “Faixas” sutis com gradiente para quebrar o branco --- */
+  .band{ background:var(--grad); padding:8px 0; border-top:1px solid #eef2f7; border-bottom:1px solid #eef2f7 }
+/* --- BÔNUS (cards) --- */
+/* preços dos bônus dentro da OFERTA */
+.bonus-price{display:flex;gap:10px;align-items:center;margin-top:8px}
+.price-original{color:#94A3B8;text-decoration:line-through;font-weight:700}
+.price-free{background:var(--pink-soft);color:var(--pink-ink);font-weight:800;
+            padding:2px 10px;border-radius:999px;border:1px solid #FAD9E4}
+.bonus-chip{display:inline-block;font-size:.85rem}
+  .bonus-grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:860px){.bonus-grid{grid-template-columns:1fr 1fr}}
+  .bonus-card{
+    position:relative;background:#fff;border:1px solid #F8C7D6;border-radius:16px;padding:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);overflow:hidden
+  }
+  /* “mancha” suave no canto superior direito */
+  .bonus-card::after{
+    content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(244,163,184,.25), rgba(244,163,184,0) 70%);
+    pointer-events:none
+  }
+  .bonus-badge{
+    display:inline-block;border-radius:999px;padding:.28rem .6rem;font-weight:800;font-size:.8rem;
+    background:#FFF0F5;border:1px solid #F8C7D6;color:#b3124a
+  }
+  .bonus-card h3{margin:.6rem 0 0;font-size:clamp(18px,2.6vw,22px)}
+  .bonus-list{margin-top:10px;display:grid;gap:10px}
+  .bonus-li{display:flex;gap:10px;align-items:flex-start}
+  .bonus-li::before{content:"✅";}
+/* --- OFERTA (card) --- */
+.offer-card{
+  background: linear-gradient(180deg, #fff 0%, var(--pink-soft) 100%);
+  border: 1px solid #FAD9E4;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.06);
+}
+
+.offer-head{
+  display:flex; flex-direction:column; gap:6px; margin-bottom:12px;
+}
+.offer-head .title{
+  font-size: clamp(22px, 3.2vw, 30px);
+  line-height:1.2; margin:0;
+}
+.offer-head .subtitle{ color: var(--muted); margin:0 }
+
+.offer-grid{
+  display:grid; grid-template-columns:1fr; gap:18px; align-items:start;
+}
+@media(min-width:900px){
+  .offer-grid{ grid-template-columns:1.3fr .9fr }
+}
+
+.offer-features{
+  background:#fff; border:1px solid #F5E3EA; border-radius:16px; padding:16px;
+}
+.offer-features .item{
+  display:flex; gap:10px; align-items:flex-start;
+  background:#fff; border:1px solid #F1F5F9; border-radius:12px;
+  padding:10px 12px; margin-bottom:10px;
+}
+.offer-features .item:last-child{ margin-bottom:0 }
+.offer-features .check{ font-weight:900; color:var(--turquoise-ink) }
+
+.offer-pricebox{
+  background:#fff; border:1px solid #FAD9E4; border-radius:16px; padding:18px;
+  box-shadow: 0 6px 18px rgba(244,163,184,.18);
+}
+.offer-pricebox .price{
+  font-weight:800; margin-bottom:2px; color:#191b1f;
+  font-size: clamp(26px, 4vw, 34px);
+}
+.offer-pricebox .price .small{
+  font-weight:600; font-size:.9rem; color:#c03f6b;
+}
+.offer-pricebox .note{ color:var(--muted); margin:6px 0 14px }
+.offer-pricebox .btn{ width:100%; text-align:center }
+.offer-pricebox .secure{ color:#60708a; font-size:.85rem; margin-top:10px; text-align:center }
+/* --- Autor (Quem é Diogo Jebe) --- */
+.about{display:grid; grid-template-columns:1fr; gap:18px; align-items:center}
+@media(min-width:900px){.about{grid-template-columns:1.1fr .9fr}}
+.about-img{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:16px; background:#e9eef3}
+
+/* --- Garantia com selo --- */
+.guarantee{display:grid; grid-template-columns:1fr; gap:18px; align-items:center}
+@media(min-width:900px){.guarantee{grid-template-columns:1.2fr .8fr}}
+.seal-wrap{
+  background:var(--pink-soft);
+  border:1px solid #FAD9E4;
+  border-radius:16px;
+  padding:16px;
+  display:flex; align-items:center; justify-content:center;
+}
+.seal{width:100%; max-width:360px; height:auto; display:block}
+/* --- DADOS / estatísticas --- */
+.data-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+  margin-top:22px;
+}
+@media(min-width:720px){.data-grid{grid-template-columns:1fr 1fr}}
+.data-card{
+  background:#fff;
+  border:1px solid #E7EEF5;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,.04);
+  text-align:left;
+}
+.data-number{
+  font-size:clamp(36px,5vw,54px);
+  font-weight:900;
+  color:var(--turquoise);
+  margin-bottom:6px;
+}
+.data-card p{
+  margin:0;
+  font-size:1rem;
+  line-height:1.4;
+}
+.data-source{
+  display:block;
+  margin-top:8px;
+  font-size:.85rem;
+  color:#6b7280;
+  font-style:italic;
+}
+/* --- PILARES (imagem + texto lado a lado) --- */
+.pillars2 { padding: 36px 0; }
+.pillars2 h2 { font-size:clamp(22px,3.5vw,32px); margin:0 0 14px; }
+.pillar-row{
+  display:grid; grid-template-columns:1fr; gap:20px; align-items:center;
+  margin:26px 0; 
+}
+@media(min-width:980px){
+  .pillar-row{ grid-template-columns:1.05fr .95fr }
+  .pillar-row.reverse{ grid-template-columns:.95fr 1.05fr }
+}
+.pillar-img{
+  width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:16px;
+  background:#f2f6f8; border:1px solid #E7EEF5; box-shadow:0 6px 18px rgba(0,0,0,.05);
+}
+.pillar-text h3{ margin:0 0 6px; font-size:clamp(18px,2.6vw,24px) }
+.pillar-text p{ margin:0; color:var(--muted) }
+.pillars-note{ color:var(--muted); margin-top:6px; font-size:.92rem }
+
+/* bolinhas da listagem interna (se quiser usar) */
+.pillar-list{ display:grid; gap:8px; margin-top:10px }
+.pillar-li{ display:flex; gap:10px; align-items:flex-start }
+.pillar-li::before{ content:"•"; color:var(--turquoise); font-weight:900 }
+/* --- Blocos genéricos (cards responsivos) --- */
+.blocks{
+  display:grid; grid-template-columns:1fr; gap:14px;
+}
+@media(min-width:760px){
+  .blocks{ grid-template-columns:repeat(2,1fr) }
+}
+@media(min-width:1040px){
+  .blocks{ grid-template-columns:repeat(3,1fr) }
+}
+.block{
+  background:#fff; border:1px solid #E7EEF5; border-radius:14px;
+  padding:14px 16px; box-shadow:0 4px 14px rgba(0,0,0,.04);
+  display:flex; gap:10px; align-items:flex-start;
+}
+.block .emoji{
+  font-size:1.35rem; line-height:1; margin-top:2px;
+}
+.block .t{
+  margin:0; color:var(--ink);
+}
+.block .m{
+  margin:.2rem 0 0; color:var(--muted); font-size:.95rem;
+}
+
+/* variação com borda colorida (opcional) */
+.block.good{ border-color:#7be9de; background:var(--turquoise-soft) }
+.block.bad{ border-color:#f8c4d2; background:var(--pink-soft) }
+
+/* cabeçalho de seção com subtítulo */
+.section h2 + .subtle{
+  color:var(--muted); margin:-6px 0 14px; font-size:.98rem;
+}
+/* --- ROBÔ C.A.L.M.A. (sessão destaque) --- */
+.robot {
+  background: linear-gradient(135deg, #ECFFFC 0%, #E0F4FB 100%); /* Mais turquesa/azul */
+  border-top: 1px solid #eef2f7;
+  border-bottom: 1px solid #eef2f7;
+  padding: 48px 0;
+}
+
+.robot .eyebrow {
+  color: var(--turquoise-ink);
+  background: #E6FFFB;
+  padding: .22rem .6rem;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: .78rem;
+  display: inline-block;
+}
+
+.robot h2 {
+  margin: 10px 0 6px;
+  font-size: clamp(26px, 4.2vw, 40px);
+  line-height: 1.15;
+}
+
+.robot-sub {
+  color: var(--muted);
+  font-size: clamp(15px, 2.6vw, 18px);
+  max-width: 860px;
+}
+
+.robot-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: center;
+  margin-top: 18px;
+}
+@media (min-width: 980px){
+  .robot-grid { grid-template-columns: 1.05fr .95fr; }
+}
+
+.robot-card {
+  background:#fff;
+  border:1px solid #EEF2F7;
+  border-radius:16px;
+  box-shadow:0 6px 24px rgba(0,0,0,.06);
+  padding:18px;
+}
+
+.robot-list { display:grid; gap:10px; margin:10px 0 0; }
+.robot-li { display:flex; gap:10px; align-items:flex-start; }
+.robot-li::before { content:"✓"; color:#0c6f67; font-weight:900; margin-top:2px; }
+
+.robot-quote {
+  background: #fff;
+  border-left:4px solid var(--pink); /* Mantendo o rosa aqui para o contraste da citação */
+  border:1px solid #FAD9E4; /* Borda da citação mais rosa */
+  border-radius:12px;
+  padding:12px 14px;
+  color:#25313b;
+  margin-top:12px;
+  font-size: .98rem;
+}
+
+.robot-media {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border:1px solid #E7EEF5;
+  background: radial-gradient(1200px 400px at 80% -10%, rgba(160,216,214,.35) 0%, transparent 60%), /* Turquesa suave */
+              radial-gradient(1000px 360px at -20% 110%, rgba(244,163,184,.3) 0%, transparent 60%), #fff; /* Rosa suave */
+  min-height: 260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.robot-media img {
+  width:100%;
+  max-width:none;
+  height: auto;
+  display:block;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.12));
+}
+
+.robot-cta { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.robot-cta .btn { padding:14px 18px; }
+/* --- Rodapé --- */
+.footer {
+  background: linear-gradient(180deg, #F8FEFC 0%, var(--turquoise-soft) 100%); /* Mais turquesa */
+  border-top: 1px solid #E7EEF5;
+  padding: 28px 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #4B4B4B;
+}
+
+.footer a {
+  color: var(--turquoise-ink); /* Link do footer em turquesa */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footer-links {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #555;
+}
+.sem-moldura{
+  width:100% !important;
+  height:auto !important;
+  object-fit:contain !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+}
+
+/* Grid do HERO: 1 coluna no celular, 2 no desktop */
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:22px;
+  align-items:center;
+  margin-top:18px;
+}
+@media(min-width:980px){
+  /* dá mais espaço ao texto à esquerda e mantém a coluna do vídeo à direita */
+  .hero-grid{ grid-template-columns:1.35fr .9fr; }
+}
+
+/* Coluna da direita: vídeo + CTA empilhados com espaçamento */
+.hero-side{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* CTA do topo: largura total da coluna da direita */
+.hero-cta-btn{
+  text-align:center;
+  width:100%;
+}
+
+/* Garante que as “bolhas” (bullets) ocupem a largura da coluna da esquerda */
+.bullets{ width:100%; }
+
+/* Vídeo responsivo (já tinha), mantenho aqui só p/ garantir) */
+.video-wrap{
+  border-radius:16px; overflow:hidden; border:1px solid #E7EEF5; background:#fff;
+  box-shadow:0 6px 24px rgba(0,0,0,.06);
+  aspect-ratio:16/9;
+}
+.video-wrap iframe{width:100%; height:100%; border:0; display:block}
+/* --- HERO: vídeo médio no desktop (maior sem esmagar o texto) --- */
+@media (min-width: 980px) {
+  .video-wrap {
+    aspect-ratio: 16 / 9;
+    height: 300px;        /* médio: maior que o padrão, menor que 350 */
+  }
+  .video-wrap iframe {
+    height: 100%;
+  }
+  .hero-grid {
+    grid-template-columns: 1.3fr 1fr; /* mais espaço pro texto, vídeo confortável */
+  }
+}
+
+/* --- Fundo com degradê do Método CALMA --- */
+.bg-grad {
+  background: var(--grad);
+  border-top: 1px solid #eef2f7;
+  border-bottom: 1px solid #eef2f7;
+}
+/* ===== AJUSTE: Foto do autor maior e 100% sem moldura ===== */
+.about-img.sem-moldura{
+  /* anula qualquer “quadro” fixo */
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+
+  /* tira qualquer moldura/resquício */
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+
+  /* tamanho e centralização */
+  width: 100% !important;
+  max-width: 300px;   /* tamanho bom no celular */
+  display: block;
+  margin: 0 auto;
+}
+
+/* aumenta um pouco no desktop */
+@media (min-width: 900px){
+  .about-img.sem-moldura{
+    max-width: 400px; /* ajuste de vitrine no desktop */
+  }
+}
+.depoimentos img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+/* sobreposição de clique para reiniciar e ativar o som */
+.video-wrap{ position:relative; }
+.video-click-catcher{
+  position:absolute; inset:0; z-index:2;
+  cursor:pointer; background:transparent;
+}
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-top">
+        <img class="logo" src="logo-calma.png" alt="Método C.A.L.M.A." />
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <h1>
+            Uma inteligência artificial que entende o corpo e a mente da mulher que quer emagrecer.
+          </h1>
+
+          <p class="sub">
+            Conheça o Robô C.A.L.M.A.: uma IA treinada para responder suas dúvidas sobre emagrecimento, compulsão, alimentação, treinos, saúde mental e muito mais – com base em um método criado especialmente para mulheres.
+          </p>
+
+          <p class="muted" style="margin-top:14px;font-weight:700">Assista ao vídeo e descubra como mulheres estão se libertando da culpa, da ansiedade e do efeito sanfona:</p>
+          <div class="bullets">
+            <div class="bullet"><strong class="check">✔️</strong> Descubra como lidar com a compulsão sem se sabotar</div>
+            <div class="bullet"><strong class="check">✔️</strong> Tenha respostas práticas e acolhedoras em segundos</div>
+            <div class="bullet"><strong class="check">✔️</strong> Emagreça com apoio real, sem precisar pagar fortunas</div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="video-wrap">
+            <div class="video-click-catcher" aria-label="Ativar som e começar do início"></div>
+
+            <iframe
+              id="ytplayer"
+              src="https://www.youtube-nocookie.com/embed/Ub-6rKHNoUs?rel=0&modestbranding=1&playsinline=1&autoplay=1&mute=1&enablejsapi=1&iv_load_policy=3&color=white&origin=https://mentoria.metodocalma.net"
+              title="Vídeo de apresentação — Robô C.A.L.M.A."
+              loading="lazy"
+              allow="autoplay; encrypted-media; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <a href="#oferta" class="btn btn-pink hero-cta-btn">🚀 Quero Conhecer o Robô C.A.L.M.A. Agora</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="band"></div>
+
+  <section class="section robot" id="demo">
+    <div class="container">
+      <span class="eyebrow">COMO FUNCIONA NA PRÁTICA</span>
+      <h2>Você pergunta. O Robô C.A.L.M.A. responde.</h2>
+      <p class="robot-sub">
+        É como conversar com uma mentora particular, só que disponível a qualquer hora, sem julgamento e sem espera.
+      </p>
+
+      <div class="robot-grid">
+        <div>
+          <div class="robot-media">
+            <img src="robo.png" alt="Demonstração do Robô C.A.L.M.A. respondendo dúvidas" />
+          </div>
+        </div>
+        <div>
+          <div class="robot-card">
+            <h3 style="margin:0 0 6px">Exemplo Real de Uso:</h3>
+            
+            <div class="robot-quote" style="border-left-color:var(--turquoise);">
+              <strong>Você digita:</strong><br>
+              “Tive um ataque de ansiedade e comi tudo que vi pela frente, o que eu faço?”
+            </div>
+
+            <div class="robot-quote" style="margin-top:12px;">
+              <strong>O robô responde com:</strong><br>
+              Empatia, clareza e um plano de ação imediato baseado no Método C.A.L.M.A. — que une consciência emocional, nutrição inteligente, treinos viáveis, mentalidade estável e autossustentação.
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-grad">
+    <div class="container">
+      <h2>💡 Esse Robô Foi Feito Para Você, Que…</h2>
+      <p class="subtle">Veja se você se identifica com alguns destes pontos:</p>
+  
+      <div class="blocks">
+        <div class="block"><div class="emoji">🔁</div><div>
+          <p class="t">Já tentou de tudo, mas sente que “sempre volta à estaca zero”</p>
+        </div></div>
+  
+        <div class="block"><div class="emoji">😥</div><div>
+          <p class="t">Vive lutando contra a compulsão, ansiedade ou culpa ao comer</p>
+        </div></div>
+  
+        <div class="block"><div class="emoji">⚡</div><div>
+          <p class="t">Se cobra demais e não tem energia para seguir planos engessados</p>
+        </div></div>
+  
+        <div class="block"><div class="emoji">🎯</div><div>
+          <p class="t">Quer emagrecer com equilíbrio físico, emocional e mental</p>
+        </div></div>
+  
+        <div class="block"><div class="emoji">🤝</div><div>
+          <p class="t">Precisa de apoio constante, mas não tem como pagar por consultas frequentes</p>
+        </div></div>
+
+        <div class="block"><div class="emoji">🧠</div><div>
+          <p class="t">Busca respostas rápidas e acolhedoras para sua jornada</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <h2>🧰 O Que Você Recebe (Tudo Incluído)</h2>
+      <p class="muted">
+        O Robô C.A.L.M.A. é uma inteligência artificial criada para ajudar mulheres a emagrecerem com saúde emocional e consistência. Baseado no Método C.A.L.M.A., ele responde perguntas sobre:
+      </p>
+      
+      <div class="receive-grid" style="margin-top:20px;">
+        <div class="receive-card">
+          <div class="receive-icon">🍽️</div>
+          <div class="receive-text">Alimentação, cardápios e combinações</div>
+        </div>
+        <div class="receive-card">
+          <div class="receive-icon">🏋️‍♀️</div>
+          <div class="receive-text">Treinos rápidos e eficazes para fazer em casa</div>
+        </div>
+        <div class="receive-card">
+          <div class="receive-icon">🧠</div>
+          <div class="receive-text">Compulsão, ansiedade e autossabotagem</div>
+        </div>
+        <div class="receive-card">
+          <div class="receive-icon">🧘‍♀️</div>
+          <div class="receive-text">Procrastinação e falta de motivação</div>
+        </div>
+        <div class="receive-card">
+          <div class="receive-icon"> hormon</div>
+          <div class="receive-text">Sono, ciclo hormonal e metabolismo feminino</div>
+        </div>
+        <div class="receive-card">
+          <div class="receive-icon">❓</div>
+          <div class="receive-text">E qualquer outra dúvida sobre sua jornada</div>
+        </div>
+      </div>
+      
+      <h3 style="margin:36px 0 12px; text-align:center; font-size:clamp(20px, 3vw, 28px);">🎁 Além do Robô, Você Recebe 4 Bônus Exclusivos:</h3>
+      
+      <div class="bonus-grid">
+        <div class="bonus-card">
+          <div class="bonus-badge">🎁 BÔNUS #1</div>
+          <h3>App Gerador de Lanches Saudáveis</h3>
+          <p class="muted">Escolha entre doce, salgado ou algo rápido e gere uma sugestão prática.</p>
+        </div>
+        
+        <div class="bonus-card">
+          <div class="bonus-badge">🎁 BÔNUS #2</div>
+          <h3>App Gerador de Treinos Rápidos</h3>
+          <p class="muted">Escolha o tempo (5-30 min), o espaço e o objetivo — receba um treino pronto com um clique.</p>
+        </div>
+        
+        <div class="bonus-card">
+          <div class="bonus-badge">🎁 BÔNUS #3</div>
+          <h3>App “Qual seu Nível de Compulsão?”</h3>
+          <p class="muted">Responda 10 perguntas direcionadas e receba um mini plano personalizado.</p>
+        </div>
+        
+        <div class="bonus-card">
+          <div class="bonus-badge">🎁 BÔNUS #4</div>
+          <h3>Ebook de Receitas Saudáveis</h3>
+          <p class="muted">Receitas práticas, saborosas e fáceis de implementar no dia a dia.</p>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="section" id="oferta">
+    <div class="container">
+      <div class="offer-card">
+        <div class="offer-head center">
+          <h2 class="title">Tenha Acesso Imediato ao Pacote Completo</h2>
+          <p class="subtitle">Escolha o plano que faz mais sentido para você e comece hoje mesmo.</p>
+        </div>
+  
+        <div class="offer-grid">
+          <div class="offer-features">
+            <h3 style="margin:0 0 12px">Tudo o que você recebe:</h3>
+            <div class="item"><strong class="check">🤖</strong> <strong>Robô C.A.L.M.A.</strong> (Acesso 24h por dia)</div>
+            <div class="item"><strong class="check">🍎</strong> <strong>App</strong> Gerador de Lanches Saudáveis</div>
+            <div class="item"><strong class="check">💪</strong> <strong>App</strong> Gerador de Treinos Rápidos</div>
+            <div class="item"><strong class="check">🧠</strong> <strong>App</strong> “Qual o seu nível de compulsão?”</div>
+            <div class="item"><strong class="check">🍲</strong> <strong>Ebook</strong> de Receitas Saudáveis</div>
+          </div>
+  
+          <div class="offer-pricebox" id="cta-final">
+            
+            <div>
+              <span class="badge">Plano Anual (Melhor Custo-Benefício)</span>
+              <div class="price" style="margin-top:8px;">R <span class="small">/por ano</span></div>
+              <p class="note small" style="margin-top:-4px;">Original: <span style="text-decoration:line-through;">R$ 270/ano</span></p>
+              
+              <a href="#" target="_blank" class="btn btn-pink">✅ Quero Acesso Anual (R$ 197)</a>
+            </div>
+            
+            <div class="divider" style="margin:20px 0;"></div>
+
+            <div>
+              <span class="badge" style="background: var(--turquoise-soft); color: var(--turquoise-ink);">Plano Mensal (Cancele Quando Quiser)</span>
+              <div class="price" style="margin-top:8px;">R <span class="small">/por mês</span></div>
+              <p class="note small" style="margin-top:-4px;">Original: <span style="text-decoration:line-through;">R$ 47/mês</span></p>
+              
+              <a href="#" target="_blank" class="btn">Quero Acesso Mensal (R$ 37)</a>
+            </div>
+
+            <div class="secure" style="margin-top:20px">Pagamento 100% seguro · Garantia de 7 dias</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="guarantee">
+        <div>
+          <h2>🛡️ Garantia Incondicional de 7 Dias</h2>
+          <p>
+            Você tem 7 dias de garantia incondicional para testar tudo sem risco.
+            Se não gostar, pode cancelar e receber seu dinheiro de volta.
+          </p>
+          <p class="muted">Sem perguntas, sem burocracia, simples assim.</p>
+        </div>
+  
+        <div class="seal-wrap" aria-hidden="true">
+          <svg class="seal" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2FD5C7"/> <stop offset="100%" stop-color="#7BE9DE"/>
+              </linearGradient>
+            </defs>
+            <circle cx="200" cy="200" r="180" fill="url(#g)"/>
+            <circle cx="200" cy="200" r="135" fill="none" stroke="#ffffff" stroke-opacity=".5" stroke-width="18"/>
+            <circle cx="200" cy="200" r="88" fill="#fff" opacity=".96"/>
+            <path d="M160 200 l30 30 58-68" fill="none" stroke="#005d56" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/> <text x="200" y="72" text-anchor="middle" fill="#005d56" font-size="24" font-weight="700">GARANTIA DE 7 DIAS</text>
+            <text x="200" y="350" text-anchor="middle" fill="#005d56" font-size="20" font-weight="700">RISCO ZERO</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>📣 O Que Elas Estão Dizendo Sobre o Robô</h2>
+      <p class="subtle">(Aqui você pode inserir prints ou vídeos no futuro)</p>
+  
+      <div class="blocks" style="margin-top:20px">
+        <div class="block"><div class="emoji">💬</div><div>
+          <p class="t">“Achei que era só mais um app… mas o robô fala exatamente o que eu precisava ouvir. Já me ajudou mais do que anos de terapia.”</p>
+          <p class="m" style="margin-top:8px;"><strong>– Camila R.</strong></p>
+        </div></div>
+  
+        <div class="block"><div class="emoji">💬</div><div>
+          <p class="t">“Quando tenho uma crise, ele me dá direção. Me sinto acolhida. É um alívio.”</p>
+          <p class="m" style="margin-top:8px;"><strong>– Thaís M.</strong></p>
+        </div></div>
+  
+        <div class="block"><div class="emoji">💬</div><div>
+          <p class="t">“Com ele, eu não me sinto mais sozinha. Parece que alguém me entende de verdade.”</p>
+          <p class="m" style="margin-top:8px;"><strong>– Juliana A.</strong></p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section alt">
+    <div class="container">
+      <h2>A Jornada da Frustração à Liberdade</h2>
+      <p class="subtle" style="max-width:800px; margin-left:auto; margin-right:auto;">
+        Você se sente frustrada, cansada, perdida. Já tentou tudo, mas nada dura.
+        Você quer leveza. Clareza. Apoio real. Quer olhar no espelho e se reconhecer.
+        O Robô C.A.L.M.A. é o braço que te levanta quando você mais precisa.
+      </p>
+  
+      <h3 style="margin:22px 0 10px">💔 Você Quer Parar de Sentir...</h3>
+      <div class="blocks">
+        <div class="block bad"><div class="emoji">🔁</div><div><p class="t">Que sempre recomeça do zero</p></div></div>
+        <div class="block bad"><div class="emoji">😥</div><div><p class="t">Frustração por não conseguir seguir dietas</p></div></div>
+        <div class="block bad"><div class="emoji">🍫</div><div><p class="t">Culpa por comer fora do planejado</p></div></div>
+        <div class="block bad"><div class="emoji">⚡</div><div><p class="t">Ansiedade constante e falta de energia</p></div></div>
+        <div class="block bad"><div class="emoji">🙍‍♀️</div><div><p class="t">Falta de apoio real no dia a dia</p></div></div>
+      </div>
+  
+      <h3 style="margin:22px 0 10px">💖 Você Quer Começar a Viver...</h3>
+      <div class="blocks">
+        <div class="block good"><div class="emoji">🍃</div><div><p class="t">Emagrecer com leveza, constância e clareza</p></div></div>
+        <div class="block good"><div class="emoji">🪞</div><div><p class="t">Voltar a gostar de si mesma</p></div></div>
+        <div class="block good"><div class="emoji">🧭</div><div><p class="t">Ter direcionamento prático e emocional</p></div></div>
+        <div class="block good"><div class="emoji">🌱</div><div><p class="t">Criar hábitos sustentáveis</p></div></div>
+        <div class="block good"><div class="emoji">🤝</div><div><p class="t">Sentir que não está mais sozinha</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-grad">
+    <div class="container">
+      <div class="about">
+        <img class="about-img sem-moldura" src="autor.jpg" alt="Foto de Diogo Jebe">
+  
+        <div>
+          <h2>Quem é Diogo Jebe</h2>
+          <p>
+            Criado por Diogo Jebe, educador físico com 15 anos de experiência e criador do Método C.A.L.M.A., uma abordagem holística para emagrecimento que já transformou a vida de mais de 120 mulheres.
+          </p>
+          <p class="muted">
+            Diogo Jebe é a mente e o coração por trás do Robô C.A.L.M.A.
+            Sua missão é clara: ajudar mulheres a emagrecerem sem culpa, sem tortura e com liberdade.
+            Esse robô é mais do que tecnologia. É propósito.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <h2>📊 Por Que o Robô C.A.L.M.A. Faz Sentido (A Lógica)</h2>
+  
+      <div class="data-grid">
+        <div class="data-card">
+          <div class="data-number">80%</div>
+          <p>das dietas falham em 1 ano — não por falta de informação, mas de suporte emocional.</p>
+        </div>
+  
+        <div class="data-card">
+          <div class="data-number">R$ 0,65</div>
+          <p>É o que você paga por dia (no plano anual) para ter apoio constante. Menos que um café.</p>
+          <span class="data-source">O custo médio de uma consulta é de R$ 150 a R$ 300.</span>
+        </div>
+  
+        <div class="data-card">
+          <p>O cérebro feminino responde diferente ao estresse e à ansiedade — e isso afeta diretamente o emagrecimento. O robô entende isso.</p>
+        </div>
+  
+        <div class="data-card">
+          <p>A inteligência artificial oferece respostas mais rápidas e personalizadas (24/7) do que qualquer busca no Google.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section" style="background:linear-gradient(180deg,#fff 0%, #F7FFFE 100%);">
+    <div class="container">
+      <h2>⚖️ O Que o C.A.L.M.A. Tem Que Outras Soluções Não Tem</h2>
+
+      <div class="compare" style="margin-top:14px">
+        <div class="panel panel--bad">
+          <div class="panel-head">❌ Sem o Robô C.A.L.M.A.</div>
+          <div class="panel-body">
+            <ul>
+              <li>Dúvidas sem resposta</li>
+              <li>Planilhas difíceis de seguir</li>
+              <li>Sem apoio emocional</li>
+              <li>Consultas caras e esporádicas</li>
+              <li>Caminho solitário</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel panel--good">
+          <div class="panel-head">✅ Com o Robô C.A.L.M.A.</div>
+          <div class="panel-body">
+            <ul>
+              <li>Respostas imediatas e acolhedoras</li>
+              <li>Sugestões práticas com 1 clique</li>
+              <li>Suporte emocional 24h</li>
+              <li>Acesso por menos de R$ 0,65/dia</li>
+              <li>Apoio constante na jornada</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <h2>❓ Dúvidas Frequentes (e Objeções Comuns)</h2>
+      <div class="faq" id="faq">
+        <div class="faq-item">
+          <button class="faq-q">“Será que um robô vai realmente me ajudar?”
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Sim. O robô foi treinado com base em 15 anos de experiência e no método validado com mais de 120 mulheres.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">“Já tentei de tudo e nada funciona comigo…”
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Por isso criamos uma abordagem que considera o seu emocional, mental e físico — e que se adapta à sua realidade.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">“Não tenho tempo para mais um aplicativo…”
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">O robô economiza tempo. Em poucos segundos, você tem resposta para dúvidas que levariam horas de pesquisa.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">“Isso é bom demais pra ser verdade por esse preço…”
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Essa é uma escolha estratégica. O objetivo é tornar o acesso democrático e acessível — porque todas merecem apoio.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">“Tenho medo de assinar e não usar…”
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Por isso a garantia de 7 dias: você testa, usa, e só continua se fizer sentido. Sem riscos.</div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-q">Funciona no celular?
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Sim. Acesse pelo navegador ou aplicativo no seu celular.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Preciso ter feito o curso ou mentoria?
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Não. O robô é independente e pode ser usado por qualquer mulher.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">O robô responde mesmo tudo?
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Sim! Desde alimentação e treinos até compulsão, sono e mentalidade.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Posso cancelar quando quiser?
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Sim. O plano é livre de fidelidade.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">É como conversar com alguém?
+            <svg class="faq-icon" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5 5 8.5h14Z"/></svg>
+          </button>
+          <div class="faq-a">Sim. É um chat inteligente, acolhedor e direto.</div>
+        </div>
+      </div>
+
+      <p class="muted center" style="margin-top:24px;">
+        <strong>Dúvidas?</strong> Entre em contato pelo nosso suporte via e-mail. Estamos aqui para te acompanhar de verdade.
+      </p>
+
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--grad);">
+    <div class="container center">
+      <h2>Chega de se sentir sozinha na sua jornada.</h2>
+      <p>
+        Tenha apoio real, 24 horas por dia, 7 dias por semana, na palma da sua mão.<br/>
+        Acesse o Robô C.A.L.M.A. e tenha as respostas que você precisa, na hora que você precisa.
+      </p>
+      <a href="#oferta" class="btn btn-pink">✅ Quero Meu Acesso Agora</a>
+      <p class="muted small" style="margin-top:10px">Comece a usar em menos de 2 minutos.</p>
+    </div>
+  </section>
+
+<script>
+  // FAQ acordeão
+  document.querySelectorAll('.faq-item .faq-q').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const item = btn.parentElement;
+      item.classList.toggle('open');
+    });
+  });
+</script>
+<footer class="footer">
+  <div class="container">
+    <p>© <span id="year"></span> Método C.A.L.M.A. · Todos os direitos reservados</p>
+    <p class="footer-links">
+      <a href="#topo">Voltar ao topo</a> · 
+      <a href="https://www.metodocalma.com" target="_blank">Site oficial</a> · 
+      <a href="mailto:contato@metodocalma.com">Contato</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<a href="https://wa.me/5521988170913?text=Oi! Quero saber mais sobre o Robô C.A.L.M.A." 
+   class="whatsapp-float" 
+   target="_blank" 
+   rel="noopener"
+  aria-label="Abrir WhatsApp">
+  <svg viewBox="0 0 24 24" width="40" height="40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill="white" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.47-.149-.669.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.205-.242-.583-.487-.504-.669-.513l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.718 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.123-.272-.198-.57-.347m-5.421 7.617h-.003a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.997-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.896a9.825 9.825 0 012.897 6.994c-.003 5.45-4.437 9.884-9.889 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.095.547 4.142 1.588 5.945L0 24l6.305-1.654a11.86 11.86 0 005.732 1.459h.005c6.554 0 11.889-5.335 11.892-11.893a11.82 11.82 0 00-3.486-8.413" />
+</svg>
+</a>
+
+<style>
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 20px;
+  right: 20px;
+  background: #25D366;
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.whatsapp-float:hover {
+  background: #20b955;
+}
+</style>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+  let player;
+
+  // YouTube cria o player com API habilitada
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('ytplayer', {
+      events: {
+        onReady: (e) => {
+          // garante autoplay mudo no carregamento
+          e.target.mute();
+          e.target.playVideo();
+        }
+      }
+    });
+  }
+
+  // Primeiro toque: reinicia do zero, ativa som e começa a tocar
+  document.addEventListener('DOMContentLoaded', () => {
+    const catcher = document.querySelector('.video-click-catcher');
+    if (!catcher) return;
+
+    catcher.addEventListener('click', () => {
+      try {
+        if (player && player.seekTo) {
+          player.seekTo(0, true);  // volta pro início
+          player.unMute();         // ativa som
+          player.playVideo();      // toca
+        }
+      } finally {
+        // remove a sobreposição para liberar os controles normais do YouTube
+        catcher.remove();
+      }
+    }, { once: true });
+  });
+</script>
+</body>
+</html>
