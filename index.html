@@ -621,6 +621,57 @@
   position:absolute; inset:0; z-index:2;
   cursor:pointer; background:transparent;
 }
+.objections-section {
+  padding: 60px 20px;
+  background: #fafafa;
+  text-align: center;
+}
+
+.objections-section h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.objections-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.objection-item {
+  padding: 30px 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease;
+}
+
+.objection-item:hover {
+  transform: translateY(-8px);
+}
+
+.objection-icon {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.objection-item h3 {
+  font-size: 18px;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.objection-item p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -1021,6 +1072,37 @@
       </div>
     </div>
   </section>
+  <!-- SEÇÃO DE OBJEÇÕES RESPONDIDAS -->
+<section class="objections-section">
+  <h2>Por que o Robô C.A.L.M.A. é diferente?</h2>
+  
+  <div class="objections-container">
+    <div class="objection-item">
+      <span class="objection-icon">🧠</span>
+      <h3>Entende seu cérebro</h3>
+      <p>Não é genérico. Sabe que o cérebro feminino funciona diferente e que emoção está diretamente ligada ao peso.</p>
+    </div>
+    
+    <div class="objection-item">
+      <span class="objection-icon">💬</span>
+      <h3>Conversa, não julga</h3>
+      <p>Sem culpa, sem vergonha. O robô está ali para apoiar, não para criticar. Como uma amiga que sempre entende.</p>
+    </div>
+    
+    <div class="objection-item">
+      <span class="objection-icon">⚡</span>
+      <h3>Respostas instantâneas</h3>
+      <p>Não precisa esperar por agendamento. 3 da manhã comendo por ansiedade? O robô está lá. Agora.</p>
+    </div>
+    
+    <div class="objection-item">
+      <span class="objection-icon">🎯</span>
+      <h3>Personalizado para você</h3>
+      <p>Cada resposta é baseada no seu contexto. Seu ciclo, seu histórico, suas triggers. Não é receita de bolo.</p>
+    </div>
+  </div>
+</section>
+
 
   <section class="section alt">
     <div class="container">
